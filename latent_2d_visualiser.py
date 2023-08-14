@@ -1,3 +1,4 @@
+"""Use this file to visualise the 2D poses drawn from the latent distribution of the normalising flow"""
 import matplotlib as mpl
 import numpy as np
 import matplotlib.pyplot as plt
@@ -9,7 +10,8 @@ import FrEIA.modules as Fm
 
 pose_choice = 740
 
-datafile = '../EVAL_DATA/interesting_mpi_inf_3dhp_train_correct_order_vnect_cameras.pkl'
+#change datafile as need be
+datafile = '../EVAL_DATA/mpi_inf_data.pkl'
 
 ## load pretrained INN
 # a simple chain of operations is collected by ReversibleSequential
