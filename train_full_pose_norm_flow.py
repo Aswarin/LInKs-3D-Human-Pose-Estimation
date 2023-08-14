@@ -1,3 +1,5 @@
+"""This code creates the full pose norm flow which is then used for generative sampling when training the lifting networks"""
+
 from time import time
 from types import SimpleNamespace
 from torch.utils import data
