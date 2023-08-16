@@ -1,7 +1,7 @@
 import torch.nn
 import torch.optim
 from lift_and_fill_models.utils.helpers import *
-from lift_and_fill_models.utils.models_def import Attention_Leg_Lifter, Attention_Left_Right_Lifter, Attention_Torso_Lifter, Occluded_Limb_Predictor, Occluded_Torso_Predictor, Occluded_Legs_Predictor
+from lift_and_fill_models.utils.models_def import Leg_Lifter, Left_Right_Lifter, Torso_Lifter, Occluded_Limb_Predictor, Occluded_Torso_Predictor, Occluded_Legs_Predictor
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 torch.manual_seed(19)
@@ -31,11 +31,11 @@ def combine_pose_and_limb(pose, limb, which_limb):
         full_pose = torch.cat((pose, limb), dim=2)
     return full_pose.reshape(-1, 51)
 
-# trained_leg_lifting_network = Attention_Leg_Lifter(use_batchnorm=False, num_joints=7).cuda()
-# trained_torso_lifting_network = Attention_Torso_Lifter(use_batchnorm=False, num_joints=10).cuda()
-trained_left_lifting_network = Attention_Left_Right_Lifter(use_batchnorm=False, num_joints=11, use_dropout=False,
+# trained_leg_lifting_network = Leg_Lifter(use_batchnorm=False, num_joints=7).cuda()
+# trained_torso_lifting_network = Torso_Lifter(use_batchnorm=False, num_joints=10).cuda()
+trained_left_lifting_network = Left_Right_Lifter(use_batchnorm=False, num_joints=11, use_dropout=False,
                                                            d_rate=0.25, num_heads=2).cuda()
-trained_right_lifting_network = Attention_Left_Right_Lifter(use_batchnorm=False, num_joints=11, use_dropout=False,
+trained_right_lifting_network = Left_Right_Lifter(use_batchnorm=False, num_joints=11, use_dropout=False,
                                                             d_rate=0.25, num_heads=2).cuda()
 left_leg_predictor = Occluded_Limb_Predictor(use_batchnorm=False, num_joints=14).cuda()
 right_leg_predictor = Occluded_Limb_Predictor(use_batchnorm=False, num_joints=14).cuda()
@@ -282,29 +282,31 @@ pred_test_poses = torch.cat(
 
 pred_test_poses = pred_test_poses.reshape(-1, 3, 17) - pred_test_poses.reshape(-1, 3, 17)[:, :, [0]]
 
-"""Decide if you want occlusion here"""
-#
-input_3d_no_left_arm = torch.cat((pred_test_poses[:, :, :11], pred_test_poses[:, :, 14:]), dim=2).reshape(-1, 42)
-input_3d_no_right_arm = pred_test_poses[:, :, :14].reshape(-1, 42)
-input_3d_no_left_leg = torch.cat((pred_test_poses[:, :, :4], pred_test_poses[:, :, 7:]), dim=2).reshape(-1, 42)
-input_3d_no_right_leg = torch.cat((pred_test_poses[:, :, :1], pred_test_poses[:, :, 4:]), dim=2).reshape(-1, 42)
-input_3d_no_torso = pred_test_poses[:, :, :7].reshape(-1, 21)
-input_3d_no_legs = torch.cat((pred_test_poses[:, :, :1], pred_test_poses[:, :, 7:]), dim=2).reshape(-1, 33)
 
-left_leg = left_leg_predictor(input_3d_no_left_leg)
-right_leg = right_leg_predictor(input_3d_no_right_leg)
-left_arm = left_arm_predictor(input_3d_no_right_arm)
-right_arm = right_arm_predictor(input_3d_no_left_arm)
-both_legs = legs_predictor(input_3d_no_legs)
-torso = torso_predictor(input_3d_no_torso)
-full_pose_la = combine_pose_and_limb(input_3d_no_left_arm, left_arm, 'la')
-full_pose_ra = combine_pose_and_limb(input_3d_no_right_arm, right_arm, 'ra')
-full_pose_ll = combine_pose_and_limb(input_3d_no_left_leg, left_leg, 'll')
-full_pose_rl = combine_pose_and_limb(input_3d_no_right_leg, right_leg, 'rl')
-full_pose_legs = torch.cat((input_3d_no_legs.reshape(-1, 3, 11)[:, :, :1], both_legs.reshape(-1, 3, 6), input_3d_no_legs.reshape(-1, 3, 11)[:, :, 1:]), dim=2).reshape(-1, 51)
-full_pose_torso = torch.cat((input_3d_no_torso.reshape(-1, 3, 7), torso.reshape(-1, 3, 10)), dim=2).reshape(-1, 51)
-pred_test_poses = full_pose_torso
-"""end occlusion"""
+"""This needs more work as the 3D partial poses are not created correctly in the below code"""
+# """Decide if you want occlusion here"""
+# #
+# input_3d_no_left_arm = torch.cat((pred_test_poses[:, :, :11], pred_test_poses[:, :, 14:]), dim=2).reshape(-1, 42)
+# input_3d_no_right_arm = pred_test_poses[:, :, :14].reshape(-1, 42)
+# input_3d_no_left_leg = torch.cat((pred_test_poses[:, :, :4], pred_test_poses[:, :, 7:]), dim=2).reshape(-1, 42)
+# input_3d_no_right_leg = torch.cat((pred_test_poses[:, :, :1], pred_test_poses[:, :, 4:]), dim=2).reshape(-1, 42)
+# input_3d_no_torso = pred_test_poses[:, :, :7].reshape(-1, 21)
+# input_3d_no_legs = torch.cat((pred_test_poses[:, :, :1], pred_test_poses[:, :, 7:]), dim=2).reshape(-1, 33)
+
+# left_leg = left_leg_predictor(input_3d_no_left_leg)
+# right_leg = right_leg_predictor(input_3d_no_right_leg)
+# left_arm = left_arm_predictor(input_3d_no_right_arm)
+# right_arm = right_arm_predictor(input_3d_no_left_arm)
+# both_legs = legs_predictor(input_3d_no_legs)
+# torso = torso_predictor(input_3d_no_torso)
+# full_pose_la = combine_pose_and_limb(input_3d_no_left_arm, left_arm, 'la')
+# full_pose_ra = combine_pose_and_limb(input_3d_no_right_arm, right_arm, 'ra')
+# full_pose_ll = combine_pose_and_limb(input_3d_no_left_leg, left_leg, 'll')
+# full_pose_rl = combine_pose_and_limb(input_3d_no_right_leg, right_leg, 'rl')
+# full_pose_legs = torch.cat((input_3d_no_legs.reshape(-1, 3, 11)[:, :, :1], both_legs.reshape(-1, 3, 6), input_3d_no_legs.reshape(-1, 3, 11)[:, :, 1:]), dim=2).reshape(-1, 51)
+# full_pose_torso = torch.cat((input_3d_no_torso.reshape(-1, 3, 7), torso.reshape(-1, 3, 10)), dim=2).reshape(-1, 51)
+# pred_test_poses = full_pose_torso
+# """end occlusion"""
 
 pred_test_poses = pred_test_poses.detach().cpu().numpy()
 
