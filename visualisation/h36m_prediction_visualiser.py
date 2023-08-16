@@ -45,19 +45,14 @@ torso_predictor = Occluded_Torso_Predictor(use_batchnorm=False, num_joints=7).cu
 legs_predictor = Occluded_Legs_Predictor(use_batchnorm=False, num_joints=11).cuda()
 
 # trained_leg_lifting_network.load_state_dict(
-#     torch.load('../lift_and_fill_models/best_weights_lifting_model/attention_leg_lifter_new_norm_flow_with_sampling33.9.pt'))
+#     torch.load('../lift_and_fill_models/best_weights_lifting_model/leg_lifter.pt'))
 # trained_torso_lifting_network.load_state_dict(
-#     torch.load('../lift_and_fill_models/best_weights_lifting_model/attention_torso_lifter_new_norm_flow_with_sampling33.9.pt'))
+#     torch.load('../lift_and_fill_models/best_weights_lifting_model/torso_lifter.pt'))
 trained_left_lifting_network.load_state_dict(
-    torch.load('../models/mixed_left_lifter_final.pt'), strict=False)
+    torch.load('../models/left_lifter_final.pt'), strict=False)
 
 trained_right_lifting_network.load_state_dict(
-    torch.load('../models/mixed_right_lifter_final.pt'), strict=False)
-
-# trained_right_lifting_network.load_state_dict(
-#     torch.load('../lift_and_fill_models/best_weights_lifting_model/right_side_33.1_with_attention_and_sampling.pt'), strict=False)
-# trained_left_lifting_network.load_state_dict(
-#     torch.load('../lift_and_fill_models/best_weights_lifting_model/left_side_33.1_with_sampling_and_attention.pt'), strict=False)
+    torch.load('../models/right_lifter_final.pt'), strict=False)
 
 
 
