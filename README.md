@@ -2,6 +2,8 @@
 This repository contains the code and weights of the lifting models used within the LInKs “Lifting Independent Keypoints” - Partial Pose Lifting for Occlusion
 Handling with Improved Accuracy in 2D-3D Human Pose Estimation paper.
 
+We also include the PDF of the supplementary material showing the results of our OpenPose analysis on the Human3.6M dataset.
+
 First, we want to share our appreciation for Bastian Wandt and his help in answering questions during this research.
 This work was heavily inspired by Elepose and our code was based upon his obtainable at https://github.com/bastianwandt/ElePose we recommend checking it out.
 
