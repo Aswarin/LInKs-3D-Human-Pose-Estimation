@@ -43,7 +43,7 @@ parser.add_argument("-l", "--likelihood", help="likelihood",
 args = parser.parse_args()
 num_bases = args.num_bases
 
-wandb.init(project="LInKs")
+wandb.init(project="3DV Paper")
 wandb.run.name = "3D Occlusion Part Prediction Model Training " + str(num_bases) + "_" + wandb.run.name
 project_folder = ''
 data_folder = ''
@@ -529,8 +529,8 @@ trained_right_lifting_network = Left_Right_Lifter(use_batchnorm=False, num_joint
 
 trained_leg_lifting_network.load_state_dict(torch.load('legs_lifter.pt'))
 trained_torso_lifting_network.load_state_dict(torch.load('torso_lifter.pt'))
-trained_left_lifting_network.load_state_dict(torch.load('left_lifter.pt'), strict=False)
-trained_right_lifting_network.load_state_dict(torch.load('right_lifter.pt'), strict=False)
+trained_left_lifting_network.load_state_dict(torch.load('final_best_left_lifter.pt'), strict=False)
+trained_right_lifting_network.load_state_dict(torch.load('final_best_right_lifter.pt'), strict=False)
 
 for param in trained_leg_lifting_network.parameters():
     param.requires_grad = False
@@ -544,7 +544,7 @@ for param in trained_left_lifting_network.parameters():
 for param in trained_right_lifting_network.parameters():
     param.requires_grad = False
 
-datafile = '../EVAL_DATA/h36m_data.pkl'
+datafile = '../EVAL_DATA/correct_interesting_frames_h36m.pkl'
 
 train_data = H36M_Data(datafile, train=True, get_pca=False, normalize_func=normalize_head, get_2dgt=True,
                        subjects=['S1', 'S5', 'S7', 'S6', 'S8'])
