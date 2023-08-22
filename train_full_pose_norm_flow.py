@@ -51,7 +51,7 @@ inn_2d.cuda()
 
 params = list(inn_2d.parameters())
 optimizer = optim.Adam(params, lr=config.learning_rate, weight_decay=1e-5)
-scheduler = optim.lr_scheduler.MultiStepLR(optimizer, milestones=[10,20,30], gamma=0.1)
+scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer=optimizer, gamma=0.95)
 
 
 
